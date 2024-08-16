@@ -1,0 +1,97 @@
+insert  into employee(id, workno, name, gender, age, idcard, entrydata) values (1,'123','itcast','男','10','123456789123456789','2000-01-01');
+
+select * from employee;
+
+update employee set name='itheima' where id = 1;
+
+update employee set name='小昭',gender='女' where  id =1;
+
+update employee set entrydata='2008-01-01' ;
+
+delete from employee where gender='女';
+
+update employee set name=null;
+
+delete from employee;
+
+insert into employee values
+    (1,'1','a','女','20','123123123123123123','2002-01-01'),
+    (2,'2','b','男','22','323123123123123123','2022-01-01'),
+    (3,'3','c','女','21','423123123123123123','2023-01-01');
+
+#查询返回指定字段数据
+select employee.name,employee.workno,employee.age from employee;
+
+#查询返回所有字段数据
+select * from employee;
+
+#查询所有员工的姓名，起别名，其中as也可以省略
+select employee.name as '姓名' from employee;
+
+#查询不重复的数据
+select distinct employee.gender '性别' from employee;
+
+#查询年龄等于20岁的员工
+select * from employee where age=20;
+
+#查询年龄小于20岁的员工
+select * from employee where age<20;
+
+#查询没有身份证号的员工
+select * from employee where idcard is null;
+#查询有身份证号的员工
+select * from employee where idcard is not null;
+
+#查询年龄不等于20岁的员工
+select * from employee where age<>20;
+
+#查询年龄在15到21岁之间（包含）
+select * from employee where age >=15 and age <=20;
+
+#查询性别女且年龄小于25岁
+select * from employee where gender='女' and age<25;
+
+#查询年龄等于20，21，22岁的员工
+select * from employee where age in(20,21,22);
+
+#查询姓名为1个字的员工
+select * from employee where name like '_';
+
+#查询身份证最后一位是3的员工
+select * from employee where idcard like '%3';
+
+#统计员工数量
+select count(*) from employee;
+
+#统计员工平均年龄
+select avg(age) from employee;
+
+#员工最大年龄
+select max(age) from employee;
+
+#统计女性员工年龄之和
+select sum(age) from employee where gender='女';
+
+#根据性别分组，统计男性员工和女性员工的数量，可以多统计几个字段，放在select后面
+select gender,count(*) from employee group by gender;
+
+#根据性别进行分组，统计不同性别的平均年龄
+select gender,avg(age) from employee group by gender;
+
+#查询年龄小于45岁的员工，并根据入职时间分组，获取员工数量大于等于1的身份证，注意在筛选的时候都可以取别名
+select entrydata,count(*) from employee where age<45 group by entrydata having count(*)>=1;
+
+#根据年龄进行升序排序，升序是默认的
+select * from employee order by age;
+
+#根据入职时间降序
+select * from employee order by entrydata desc;
+
+#首先根据性别排序，性别一样再根据入职时间排序
+select * from employee order by gender,entrydata desc;
+
+#查询第一页员工数据，每一页展示一条数据
+select * from employee limit  0,1;
+
+#查询第二页员工数据，每一页展示两条数据
+select * from employee limit 2,2;
