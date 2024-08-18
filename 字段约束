@@ -1,0 +1,19 @@
+create table user(
+    id int primary key auto_increment comment '编号',
+    name varchar(10) not null unique comment '姓名',
+    age int check ( age>0 and age<=120 ) comment '年龄',
+    statue char(1) default '1' comment '状态',
+    gender char(1) comment '性别'
+)comment '用户表';
+
+
+insert into user (name, age, statue, gender)
+values ('tom','20','1','男'),('jack','22','0','男');
+
+#检验各种键值的性质
+insert into user(name) values ('ff');
+insert into user(name) values (null);
+insert into user(name,age) values ('fzc',1000);
+
+insert into user (name, age, statue, gender)
+values ('dd',22,'1','男');
