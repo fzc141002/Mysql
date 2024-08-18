@@ -1,0 +1,23 @@
+#生成6位的随机验证码
+select lpad(round(rand()*1000000,0),6,round(rand()*10,0));
+
+#生成当前的日期
+select current_date();
+
+#往后推多少天
+select date_add(now(),interval 70 day);
+
+#前面的时间减去后面的时候
+select datediff('2021-10-01','2022-10-02');
+
+#注意要展示什么就在select后面写上
+select employee.name,datediff(curdate(),entrydata) as 'entrydates' from employee order by entrydates desc ;
+
+select if(true,'ok','error');
+
+select ifnull(null,'default');
+
+select
+    employee.name,
+    (case employee.gender when '女' then '女生' else '男生' end) as '性别'
+from employee;
