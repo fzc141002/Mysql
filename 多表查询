@@ -1,0 +1,73 @@
+#多表关系中的多对多
+create table student(
+    id int auto_increment primary key comment '主键ID',
+    name varchar(10) comment '姓名',
+    no varchar(10) comment '学号'
+)comment '学生表';
+insert into student values (null,'黛丽丝','2001001'),(null,'谢逊','2001002'),
+                           (null,'殷天正','2001003'),(null,'韦一笑','2001004');
+
+
+create table course(
+    id int auto_increment primary key comment '主键ID',
+    name varchar(10) comment '课程名称'
+)comment '课程表';
+insert into course values (null,'java'),(null,'php'),(null,'mysql'),(null,'hadoop');
+
+create table student_course(
+    id int auto_increment primary key comment '主键',
+    studentid int not null comment '学生ID',
+    courseid int not null comment '课程ID',
+    constraint fk_courseid foreign key (courseid) references course(id),
+    constraint fk_studentid foreign key (studentid) references student(id)
+)comment '学生课程中间表';
+
+insert into student_course values (null,1,1),(null,1,2),
+                                  (null,1,3),(null,2,2),
+                                  (null,2,3),(null,3,4);
+
+#在多表查询的过程中可能会出现笛卡尔积的情况,避免这种情况需要对应的主键相同
+select * from student,course,student_course where student_course.studentid=student.id and student_course.courseid=course.id;
+
+
+#隐式连接
+select student.name,course.name from student,course,student_course where student_course.studentid=student.id and student_course.courseid=course.id;
+
+#显示连接
+select s.name,sc.id from student_course sc inner join student s on sc.id=s.id;
+
+#左外连接，查询左表专属的数据
+select s.*,sc.courseid from student s left join student_course sc on s.id = sc.studentid;
+
+#右外连接
+select s.*,sc.* from student s right join student_course sc on s.id = sc.studentid;
+
+#自连接，查询对应组员的组长，关注两种不同的方式
+select s1.name '组长',s2.name '组员' from student s1 join student s2 on s2.upper=s1.id;
+select s1.name '组长',s2.name '组员' from student s1 ,student s2 where s1.id=s2.upper;
+
+#外连接，如果是null的话也需要查询出来
+select  s1.name '组长',s2.name '组员' from student s2 left join student s1 on s2.upper=s1.id;
+
+#联合查询
+select * from student s where s.id=1 or s.upper=1;
+#或者通过union all，这个在条件多一点的时候，比较实用，删去all关键字之后就去除重复了，并且列数要保持一致
+select * from student s where s.id=1
+union all
+select * from student s where s.upper=1;
+
+#变量子查询
+#查询没有组长的组长id
+#标量子查询
+select s.id from student s where isnull(s.upper);
+select * from student s where s.id=(select s.id from student s where isnull(s.upper));
+
+#查询id大于1的人
+select * from student s where s.id>(select s.id from student s where isnull(s.upper));
+
+#列子查询
+select s.id from student s where s.upper=1 or s.upper=4;
+select * from student s where s.id in(select s.id from student s where s.upper=1 or s.upper=4);
+
+#行子查询
+select * from student s where (s.id,s.name) = (select s.id,s.name from student s where isnull(s.upper));
